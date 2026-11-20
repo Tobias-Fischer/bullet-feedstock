@@ -4,6 +4,12 @@ mkdir build
 cd build
 if %errorlevel% neq 0 exit /b %errorlevel%
 
+rem The location of Python.h depends on the Python version (include\ up to 3.14,
+rem include\python\ from 3.15 on), so ask the interpreter instead of hardcoding it
+for /f "delims=" %%i in ('%PYTHON% -c "import sysconfig; print(sysconfig.get_path('include').replace(chr(92), '/'))"') do set "PYTHON_INCLUDE_DIR=%%i"
+if %errorlevel% neq 0 exit /b %errorlevel%
+if not exist "%PYTHON_INCLUDE_DIR%/Python.h" exit /b 1
+
 cmake .. ^
   -GNinja ^
   -DCMAKE_BUILD_TYPE=Release ^
@@ -20,7 +26,7 @@ cmake .. ^
   -DCMAKE_SKIP_RPATH=YES ^
   -DPYTHON_EXECUTABLE=%PYTHON% ^
   -DPYTHON_LIBRARY=%PREFIX%/libs/python%CONDA_PY%.lib ^
-  -DPYTHON_INCLUDE_DIR=%PREFIX%/include ^
+  -DPYTHON_INCLUDE_DIR=%PYTHON_INCLUDE_DIR% ^
   -DPYTHON_VERSION_PYBULLET=%PY_VER% ^
   -DPYTHON_SITE_PACKAGES=%SP_DIR%
 

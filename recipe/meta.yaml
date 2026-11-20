@@ -2,7 +2,7 @@
 
 package:
   name: bullet
-  version: {{ version }}
+  version: "{{ version }}"
 
 source:
   fn: bullet3-{{ version }}.tar.gz
