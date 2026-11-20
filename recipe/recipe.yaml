@@ -65,22 +65,25 @@ outputs:
       run_exports:
         - ${{ pin_subpackage('bullet-cpp', upper_bound='x.x') }}
     tests:
-      - script:
-          - if: unix
-            then:
-              - test -d ${PREFIX}/include/bullet
-              - test -f ${PREFIX}/include/bullet/BulletSoftBody/btSoftBody.h
-              - test -f ${PREFIX}/lib/pkgconfig/bullet.pc
-              - test -f ${PREFIX}/lib/cmake/bullet/BulletConfig.cmake
-              - test -f ${PREFIX}/lib/libBulletExampleBrowserLib${SHLIB_EXT}
-              - test -f ${PREFIX}/lib/libgwen${SHLIB_EXT}
-              - test -f ${PREFIX}/lib/libBussIK${SHLIB_EXT}
-              - test -f ${PREFIX}/lib/libBullet3Dynamics${SHLIB_EXT}
-            else:
-              - if not exist %LIBRARY_PREFIX%\include\bullet\BulletSoftBody\btSoftBody.h (exit 1)
-              - if not exist %LIBRARY_PREFIX%\lib\cmake\bullet\BulletConfig.cmake (exit 1)
-              - if not exist %LIBRARY_PREFIX%\lib\BussIK.lib (exit 1)
-              - if not exist %LIBRARY_PREFIX%\lib\BulletCollision.lib (exit 1)
+      - package_contents:
+          include:
+            - bullet/BulletSoftBody/btSoftBody.h
+          files:
+            - if: unix
+              then:
+                - lib/pkgconfig/bullet.pc
+                - lib/cmake/bullet/BulletConfig.cmake
+              else:
+                - Library/lib/cmake/bullet/BulletConfig.cmake
+                - Library/lib/BussIK.lib
+                - Library/lib/BulletCollision.lib
+          lib:
+            - if: unix
+              then:
+                - BulletExampleBrowserLib
+                - gwen
+                - BussIK
+                - Bullet3Dynamics
 
   - package:
       name: pybullet
@@ -134,10 +137,6 @@ outputs:
           imports:
             - pybullet
           pip_check: false
-      - script:
-          - if: unix
-            then: test -f ${PREFIX}/include/bullet/BulletSoftBody/btSoftBody.h
-            else: if not exist %LIBRARY_PREFIX%\include\bullet\BulletSoftBody\btSoftBody.h (exit 1)
 
 about:
   homepage: http://bulletphysics.org
