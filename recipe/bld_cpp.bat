@@ -9,6 +9,9 @@ rem include\python\ from 3.15 on), so ask the interpreter instead of hardcoding 
 for /f "delims=" %%i in ('%PYTHON% -c "import sysconfig; print(sysconfig.get_path('include').replace(chr(92), '/'))"') do set "PYTHON_INCLUDE_DIR=%%i"
 if %errorlevel% neq 0 exit /b %errorlevel%
 if not exist "%PYTHON_INCLUDE_DIR%/Python.h" exit /b 1
+for /f "delims=" %%i in ('%PYTHON% -c "import sys; print('%%d%%d' %% sys.version_info[:2])"') do set "PY_NODOT=%%i"
+for /f "delims=" %%i in ('%PYTHON% -c "import sys; print('%%d.%%d' %% sys.version_info[:2])"') do set "PY_DOT=%%i"
+if not exist "%PREFIX%\libs\python%PY_NODOT%.lib" exit /b 1
 
 cmake .. ^
   -GNinja ^
@@ -25,9 +28,9 @@ cmake .. ^
   -DCMAKE_BUILD_TYPE=Release ^
   -DCMAKE_SKIP_RPATH=YES ^
   -DPYTHON_EXECUTABLE=%PYTHON% ^
-  -DPYTHON_LIBRARY=%PREFIX%/libs/python%CONDA_PY%.lib ^
+  -DPYTHON_LIBRARY=%PREFIX%/libs/python%PY_NODOT%.lib ^
   -DPYTHON_INCLUDE_DIR=%PYTHON_INCLUDE_DIR% ^
-  -DPYTHON_VERSION_PYBULLET=%PY_VER% ^
+  -DPYTHON_VERSION_PYBULLET=%PY_DOT% ^
   -DPYTHON_SITE_PACKAGES=%SP_DIR%
 
 if %errorlevel% neq 0 exit /b %errorlevel%
