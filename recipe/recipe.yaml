@@ -38,25 +38,20 @@ outputs:
           else: bld_cpp.bat
     requirements:
       build:
-        - if: build_platform != target_platform
-          then:
-            - python
-            - cross-python_${{ target_platform }}
-            - numpy
         - cmake <4
         - ninja
         - ${{ compiler("c") }}
         - ${{ stdlib("c") }}
         - ${{ compiler("cxx") }}
       host:
+        # No python here on purpose: bullet-cpp is independent of the Python version,
+        # the Python bindings are built from source in the pybullet output
         - if: linux
           then: libgl-devel
         - if: unix
           then:
             - xorg-libx11
             - xorg-libxext
-        - python
-        - numpy
       run:
         - if: unix
           then:
