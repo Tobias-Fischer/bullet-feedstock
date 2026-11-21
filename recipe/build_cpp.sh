@@ -2,9 +2,6 @@
 
 set -ex
 
-# Delete outdated FindPythonLibs
-rm -f build3/cmake/FindPythonLibs.cmake
-
 mkdir -p build
 pushd build
 

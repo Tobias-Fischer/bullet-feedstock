@@ -14,9 +14,7 @@ source:
     - devendorzlib.patch
     - double-precision-postfix.patch
     - if: linux
-      then:
-        - add_rt.patch
-        - fix-find-pythonlibs.patch
+      then: add_rt.patch
     - if: ppc64le
       then:
         # On ppc64le compilation of Bullet3OpenCL fails (https://github.com/conda-forge/bullet-feedstock/issues/24)
