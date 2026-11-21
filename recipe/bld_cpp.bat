@@ -4,12 +4,14 @@ mkdir build
 cd build
 if %errorlevel% neq 0 exit /b %errorlevel%
 
+rem Bullet does not export its symbols on Windows, so only static libraries can be built
+rem (BUILD_PYBULLET=ON used to silently force BUILD_SHARED_LIBS=OFF on Windows)
 cmake .. ^
   -GNinja ^
   -DCMAKE_BUILD_TYPE=Release ^
   -DCMAKE_PREFIX_PATH=%LIBRARY_PREFIX% ^
   -DCMAKE_INSTALL_PREFIX=%LIBRARY_PREFIX% ^
-  -DBUILD_SHARED_LIBS=ON ^
+  -DBUILD_SHARED_LIBS=OFF ^
   -DINSTALL_LIBS=ON ^
   -DINSTALL_EXTRA_LIBS=ON ^
   -DUSE_MSVC_RUNTIME_LIBRARY_DLL=ON ^
